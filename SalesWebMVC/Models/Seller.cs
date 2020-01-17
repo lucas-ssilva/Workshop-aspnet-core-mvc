@@ -11,11 +11,9 @@ namespace SalesWebMVC.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
-<<<<<<< HEAD
+
         public double BaseSalary { get; private set; }
-=======
-        public double BaseSalary { get; set; }
->>>>>>> 2c8cbdffcb50c2cc2ddab16e962b56b3ed422770
+
         public virtual Department Department { get; set; }
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
 

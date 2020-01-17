@@ -1,9 +1,59 @@
-﻿
+﻿@model IEnumerable<SalesWebMVC.Models.Seller>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sellers";
 }
 
-<h1>Sellers</h1>
+<h1>@ViewData["Title"]</h1>
 
-<p>Sellers Index Page</p>
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark"> 
+        <tr>
+            <th style="text-align: center; vertical-align:middle">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th style="text-align: center; vertical-align:middle">
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th style="text-align: center; vertical-align:middle">
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th style="text-align: center; vertical-align:middle">
+                @Html.DisplayNameFor(model => model.BaseSalary)
+            </th>
+            <th style="text-align: center; vertical-align:middle">
+                Ações
+            </th>
+        </tr>
+    </thead class="thead-dark">
 
+    <tbody>
+        @foreach(var item in Model)
+        {
+        <tr >
+            <td style="text-align: center; vertical-align:middle">
+                @Html.DisplayFor(modelitem => item.Name)
+            </td>
+            <td style="text-align: center; vertical-align:middle">
+                @Html.DisplayFor(modelitem => item.Email)
+            </td>
+            <td style="text-align: center; vertical-align:middle">
+                @Html.DisplayFor(modelitem => item.BirthDate)
+            </td>
+            <td style="text-align: center; vertical-align:middle">
+                @Html.DisplayFor(modelitem => item.BaseSalary)
+            </td>
+            <td style="text-align: center; vertical-align:middle" >
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit<p></p></a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details<p></p></a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete<p></p></a>
+
+
+            </td>
+        </tr>
+        }
+
+    </tbody>
+
+</table>
+       
