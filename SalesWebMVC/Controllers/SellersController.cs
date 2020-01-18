@@ -60,6 +60,20 @@ namespace SalesWebMVC.Controllers
         {
             _sellerService.Remove(id); //remove do banco
             return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index 
+
+        }
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
         }
     }
 }
