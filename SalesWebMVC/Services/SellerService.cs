@@ -25,5 +25,16 @@ namespace SalesWebMVC.Services
             _context.Add(obj); //insere objeto no banco de dados 
             _context.SaveChanges(); // salva alteração 
         }
+        public Seller FindById(int id)
+        {
+            return _context.Seller.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Remove(int id)
+        {
+            Seller obj = _context.Seller.Find(id);
+            _context.Seller.Remove(obj);
+            _context.SaveChanges();
+        }
     }
 }
