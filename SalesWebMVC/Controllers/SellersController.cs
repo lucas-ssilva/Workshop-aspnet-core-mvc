@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
+
 
 namespace SalesWebMVC.Controllers
 {
@@ -74,6 +76,45 @@ namespace SalesWebMVC.Controllers
                 return NotFound();
             }
             return View(obj);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewmodel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(viewmodel);
+        }
+
+        [HttpPost] //indica que é post e não get , post pode mexer e atualizar banco 
+        [ValidateAntiForgeryToken] // segurança , previne que usem sua sesão aberta para enviar dados 
+        public IActionResult Edit(int id ,Seller seller)
+        {
+            if(id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _sellerService.Update(seller); //remove do banco
+                return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
