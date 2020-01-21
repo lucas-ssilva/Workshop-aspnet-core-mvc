@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -46,12 +47,12 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error),new {message = "Id não pode ser nulo, Tente de novo" });
             }
             var obj = _sellerService.FindById(id.Value);
-            if(id == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             return View(obj);
         }
@@ -68,26 +69,26 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não pode ser nulo, Tente de novo" });
             }
             var obj = _sellerService.FindById(id.Value);
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             return View(obj);
         }
 
         public IActionResult Edit(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não pode ser nulo, Tente de novo" });
             }
             var obj = _sellerService.FindById(id.Value);
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
             List<Department> departments = _departmentService.FindAll();
             SellerFormViewModel viewmodel = new SellerFormViewModel { Seller = obj, Departments = departments };
@@ -96,25 +97,31 @@ namespace SalesWebMVC.Controllers
 
         [HttpPost] //indica que é post e não get , post pode mexer e atualizar banco 
         [ValidateAntiForgeryToken] // segurança , previne que usem sua sesão aberta para enviar dados 
-        public IActionResult Edit(int id ,Seller seller)
+        public IActionResult Edit(int id, Seller seller)
         {
-            if(id != seller.Id)
+            if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id Informado na requisição não bate com o ID do vendedor" });
             }
             try
             {
                 _sellerService.Update(seller); //remove do banco
                 return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index
             }
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return NotFound();
-            }
-            catch (DbConcurrencyException)
-            {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message});
             }
         }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
+            }
     }
-}
+    }
