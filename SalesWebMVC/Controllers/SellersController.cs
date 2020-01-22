@@ -39,6 +39,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken] // segurança , previne que usem sua sesão aberta para enviar dados 
         public IActionResult Create(Seller seller)
         {
+            if(!ModelState.IsValid) // dupla proteção - caso o JS esteja desabilitado previne cadastros que não estão cumprindo as regras dos campos 
+            {
+                var departments = _departmentService.FindAll();
+                var viewmodel = new SellerFormViewModel { Departments = departments, Seller = seller };
+                return View(viewmodel);
+            }
             _sellerService.Insert(seller); //insere no banco
             return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index 
         }
@@ -99,6 +105,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken] // segurança , previne que usem sua sesão aberta para enviar dados 
         public IActionResult Edit(int id, Seller seller)
         {
+            if (!ModelState.IsValid) // dupla proteção - caso o JS esteja desabilitado previne cadastros que não estão cumprindo as regras dos campos 
+            {
+                var departments = _departmentService.FindAll();
+                var viewmodel = new SellerFormViewModel { Departments = departments, Seller = seller };
+                return View(viewmodel);
+            }
             if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Informado na requisição não bate com o ID do vendedor" });

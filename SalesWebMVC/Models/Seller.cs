@@ -9,15 +9,23 @@ namespace SalesWebMVC.Models
     public class Seller
     {
         public int Id { get; set; }
+        [Display(Name = "Nome")]
+        [Required(ErrorMessage = "Campo {0} é Obrigatorio")]  // definir que o campo é obrigatorio 
+        [StringLength(60,MinimumLength = 3,ErrorMessage = "Tamanho invalido para o campo {0}, deve estar entre {2} e {1} caracteres")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Campo {0} é Obrigatorio")]  // definir que o campo é obrigatorio 
         [DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage = "E-mail Inválido")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Campo {0} é Obrigatorio")]  // definir que o campo é obrigatorio 
         [Display(Name = "Data de Aniversário")] // altera como o nome da classe é mostrado no front
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; }
-
+        [Range(100.0, 50000.0, ErrorMessage = "{0} deve ter um valor entre {1} e {2}")]
+        [Required(ErrorMessage = "Campo {0} é Obrigatorio")]  // definir que o campo é obrigatorio 
         [Display(Name = "Salário Base")]
         [DisplayFormat(DataFormatString = "{0:F2}")] // altera para duas casas decimais 
         public double BaseSalary { get; set; }
