@@ -56,7 +56,7 @@ namespace SalesWebMVC.Controllers
                 return RedirectToAction(nameof(Error),new {message = "Id não pode ser nulo, Tente de novo" });
             }
             var obj = _sellerService.FindById(id.Value);
-            if (id == null)
+            if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
