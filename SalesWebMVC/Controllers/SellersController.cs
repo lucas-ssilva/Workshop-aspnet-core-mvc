@@ -67,9 +67,15 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken] // segurança , previne que usem sua sesão aberta para enviar dados 
         public async Task<IActionResult> Delete(int id)
         {
-           await _sellerService.RemoveAsync(id); //remove do banco
-            return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index 
-
+            try
+            {
+                await _sellerService.RemoveAsync(id); //remove do banco
+                return RedirectToAction(nameof(Index)); //redireciona o usuario para a tela index 
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Não é possivel deletar, Vendedor possui vendas Ativas" });
+            }
         }
         public async Task<IActionResult> Details(int? id)
         {
