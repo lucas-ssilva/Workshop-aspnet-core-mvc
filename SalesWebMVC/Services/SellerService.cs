@@ -17,38 +17,39 @@ namespace SalesWebMVC.Services
             _context = context;
         }
 
-       public List <Seller> FindAll()
+       public async Task<List <Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList(); // acessa as base e converte a tabela selecionada em lista . sincrona - a aplicação para ate a lista voltar 
+            return await _context.Seller.ToListAsync(); // acessa as base e converte a tabela selecionada em lista . sincrona - a aplicação para ate a lista voltar 
         }
 
-        public void Insert(Seller obj)
+        public async Task InsertAsync(Seller obj)
         {
             _context.Add(obj); //insere objeto no banco de dados 
-            _context.SaveChanges(); // salva alteração 
+           await _context.SaveChangesAsync(); // salva alteração 
         }
-        public Seller FindById(int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            Seller obj = _context.Seller.Find(id);
+            Seller obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
-            if(!_context.Seller.Any(x => x.Id == seller.Id)) // busca no banco se existe algum vendedor com o id informado ao chamar o metodo
+            bool hasAny = await _context.Seller.AnyAsync(x => x.Id == seller.Id); // busca no banco se existe algum vendedor com o id informado ao chamar o metodo
+            if (!hasAny)
             {
                 throw new NotFoundException("Id não encontrado!");
             }
             try
             {
                 _context.Seller.Update(seller);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
             catch(DbUpdateConcurrencyException e)
             {
